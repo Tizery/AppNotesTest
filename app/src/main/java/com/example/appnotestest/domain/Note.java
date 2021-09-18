@@ -3,6 +3,7 @@ package com.example.appnotestest.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class Note implements Parcelable {
@@ -13,16 +14,20 @@ public class Note implements Parcelable {
 
     private final String imageUrl;
 
-    public Note(String id, String title, String imageUrl) {
+    private final Date createdAt;
+
+    public Note(String id, String title, String imageUrl, Date createdAt) {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
+        this.createdAt = createdAt;
     }
 
     protected Note(Parcel in) {
         id = in.readString();
         title = in.readString();
         imageUrl = in.readString();
+        createdAt = (Date) in.readSerializable();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -53,6 +58,10 @@ public class Note implements Parcelable {
         return id;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,5 +87,6 @@ public class Note implements Parcelable {
         dest.writeString(id);
         dest.writeString(title);
         dest.writeString(imageUrl);
+        dest.writeSerializable(createdAt);
     }
 }
