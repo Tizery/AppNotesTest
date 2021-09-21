@@ -24,6 +24,13 @@ public class Router {
                 .commit();
     }
 
+    public void showAuth() {
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.container, new AuthFragment())
+                .commit();
+    }
+
     public void showInfo() {
         fragmentManager
                 .beginTransaction()

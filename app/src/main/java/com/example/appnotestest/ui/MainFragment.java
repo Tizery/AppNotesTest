@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.example.appnotestest.R;
@@ -37,7 +38,11 @@ public class MainFragment extends Fragment implements RouterHolder, OnBackPresse
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState == null) {
-            router.showNotesList();
+            if (isAuthorized()) {
+                router.showNotesList();
+            } else {
+                router.showAuth();
+            }
         }
 
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_nav_view);
@@ -46,7 +51,11 @@ public class MainFragment extends Fragment implements RouterHolder, OnBackPresse
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.action_notes) {
-                    router.showNotesList();
+                    if (isAuthorized()) {
+                        router.showNotesList();
+                    } else {
+                        router.showAuth();
+                    }
                     return true;
                 }
 
@@ -67,4 +76,9 @@ public class MainFragment extends Fragment implements RouterHolder, OnBackPresse
         }
         return false;
     }
+
+    private boolean isAuthorized() {
+        return GoogleSignIn.getLastSignedInAccount(requireContext()) != null;
+    }
+
 }

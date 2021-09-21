@@ -21,14 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appnotestest.R;
 import com.example.appnotestest.domain.Note;
-import com.example.appnotestest.domain.NotesRepositoryImpl;
+import com.example.appnotestest.domain.MockNotesRepositoryImpl;
 import com.example.appnotestest.ui.Router;
 import com.example.appnotestest.ui.RouterHolder;
 import com.example.appnotestest.ui.edit.EditNoteFragment;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 
 public class NotesListFragment extends Fragment implements NotesListView {
@@ -66,7 +65,7 @@ public class NotesListFragment extends Fragment implements NotesListView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        presenter = new NotesListPresenter(this, NotesRepositoryImpl.INSTANCE);
+        presenter = new NotesListPresenter(this, MockNotesRepositoryImpl.INSTANCE);
 
         adapter = new NotesAdapter(this);
     }
