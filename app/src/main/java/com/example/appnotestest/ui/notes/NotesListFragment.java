@@ -1,6 +1,7 @@
 package com.example.appnotestest.ui.notes;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -10,6 +11,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -28,7 +30,6 @@ import com.example.appnotestest.ui.edit.EditNoteFragment;
 
 import java.util.Collections;
 import java.util.List;
-
 
 public class NotesListFragment extends Fragment implements NotesListView {
 
@@ -83,6 +84,7 @@ public class NotesListFragment extends Fragment implements NotesListView {
                 int index = adapter.updateNote(note);
 
                 adapter.notifyItemChanged(index);
+
             }
         });
 
@@ -122,8 +124,7 @@ public class NotesListFragment extends Fragment implements NotesListView {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_delete_all) {
-                    adapter.setNotes(Collections.emptyList());
-                    adapter.notifyDataSetChanged();
+                    showDeleteAllAlert();
                     return true;
                 }
 
@@ -139,14 +140,13 @@ public class NotesListFragment extends Fragment implements NotesListView {
             presenter.requestNotes();
             wasNotesRequested = true;
         }
+
     }
 
     @Override
     public void showNotes(List<Note> notes) {
-
         adapter.setNotes(notes);
         adapter.notifyDataSetChanged();
-
     }
 
     @Override
@@ -185,7 +185,7 @@ public class NotesListFragment extends Fragment implements NotesListView {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_delete) {
-            presenter.removeNote(selectedNote);
+            showDeleteAlert();
             return true;
         }
 
@@ -197,4 +197,36 @@ public class NotesListFragment extends Fragment implements NotesListView {
         }
         return super.onContextItemSelected(item);
     }
+
+    private void showDeleteAlert() {
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setMessage(R.string.alert_delete_message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.removeNote(selectedNote);
+                    }
+                })
+                .setNegativeButton(R.string.negative, null)
+                .create();
+        dialog.show();
+    }
+
+    private void showDeleteAllAlert() {
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setMessage(R.string.alert_delete_all_message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        adapter.setNotes(Collections.emptyList());
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(R.string.negative, null)
+                .create();
+        dialog.show();
+    }
+
 }
